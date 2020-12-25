@@ -99,12 +99,15 @@ const resetGuesses = () => {
   selected.forEach(card => {
     card.classList.remove('selected');
   });
+  if(isFinish().every(el => el == 1)) {
+    alert('You Win!!!')
+    location.reload()
+  }
 };
 
 grid.addEventListener('click', event => {
 
   const clicked = event.target;
-
   if (
     clicked.nodeName === 'SECTION' ||
     clicked === previousTarget ||
@@ -136,3 +139,12 @@ grid.addEventListener('click', event => {
   }
 
 });
+
+
+function isFinish() {
+  let val = []
+  let cards = document.querySelectorAll('.card')
+  cards.forEach(el => val = [...val, el.classList.contains('match')])
+  return val
+}
+console.log(isFinish().every(el => el == 1))
