@@ -64,7 +64,10 @@ grid.setAttribute('class', 'grid');
 game.appendChild(grid);
 
 gameGrid.forEach(item => {
-  const { name, img } = item;
+  const {
+    name,
+    img
+  } = item;
 
   const card = document.createElement('div');
   card.classList.add('card');
