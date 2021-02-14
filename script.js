@@ -63,11 +63,7 @@ const grid = document.createElement('section');
 grid.setAttribute('class', 'grid');
 game.appendChild(grid);
 
-gameGrid.forEach(item => {
-  const {
-    name,
-    img
-  } = item;
+gameGrid.forEach(({name, img}) => {
 
   const card = document.createElement('div');
   card.classList.add('card');
@@ -99,7 +95,7 @@ const resetGuesses = () => {
   count = 0;
   previousTarget = null;
 
-  var selected = document.querySelectorAll('.selected');
+  let selected = document.querySelectorAll('.selected');
   selected.forEach(card => {
     card.classList.remove('selected');
   });
@@ -114,33 +110,30 @@ grid.addEventListener('click', event => {
   if (
     clicked.nodeName === 'SECTION' ||
     clicked === previousTarget ||
-    clicked.parentNode.classList.contains('selected') ||
-    clicked.parentNode.classList.contains('match')
-  ) {
-    return;
-  }
-  if (count < 2) {
-    count++;
-    if (count === 1) {
-      firstGuess = clicked.parentNode.dataset.name;
-      clicked.parentNode.classList.add('selected');
-    } else {
-      secondGuess = clicked.parentNode.dataset.name;
-      clicked.parentNode.classList.add('selected');
-    }
-    if (firstGuess && secondGuess) {
-      if (firstGuess === secondGuess) {
-        setTimeout(match, delay);
-      }
-      setTimeout(resetGuesses, delay);
-    }
-    previousTarget = clicked;
-  }
-});
+    clicked.closest('.card').classList.contains('selected') ||
+    clicked.closest('.card').classList.contains('match')
+  ) return;
 
+  if (count > 1) return
+  count++;
+  if (count === 1) {
+    firstGuess = clicked.closest('.card').dataset.name;
+    clicked.closest('.card').classList.add('selected');
+  }
+  if (count == 2) {
+    secondGuess = clicked.closest('.card').dataset.name;
+    clicked.closest('.card').classList.add('selected');
+  }
+  if (!firstGuess || !secondGuess) return
+  if (firstGuess === secondGuess) setTimeout(match, delay);
+  setTimeout(resetGuesses, delay);
+  previousTarget = clicked;
+  });
+  
 function isFinish() {
-  let val = []
+  // The array contains the status of each card (guessed or not guessed)
+  let gameResult = []
   let cards = document.querySelectorAll('.card')
-  cards.forEach(el => val = [...val, el.classList.contains('match')])
-  return val
+  cards.forEach(el => gameResult = [...gameResult, el.classList.contains('match')])
+  return gameResult
 }
